@@ -6,15 +6,15 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-        preload: path.join(__dirname, 'preload.js')
+        preload: path.join(__dirname, './grid/preload.js')
       }
   })
 
-  win.loadFile('index.html')
+  win.loadFile('grid.html')
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('ping', () => 'pong')
+  // ipcMain.handle('ping', () => 'pong')
   createWindow()
 
   app.on('activate', () => {
