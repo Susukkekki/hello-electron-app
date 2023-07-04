@@ -12,3 +12,7 @@ contextBridge.exposeInMainWorld('db', {
     query: (param) => ipcRenderer.invoke('query', param),    
     querySubItems : (param) => ipcRenderer.invoke('querySubItems', param)    
   })
+
+  contextBridge.exposeInMainWorld('s3', {
+    downloadObject: (bucketName, objectName) => ipcRenderer.invoke('downloadObject', bucketName, objectName)
+  })

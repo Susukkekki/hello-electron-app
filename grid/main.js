@@ -1,5 +1,69 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
+const Minio = require("minio")
+const fs = require("fs");
+
+var minioClient = new Minio.Client({
+  endPoint: 'play.min.io',
+  port: 9000,
+  useSSL: true,
+  accessKey: 'Q3AM3UQ867SPQQA43P2F',
+  secretKey: 'zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG',
+})
+
+var fileList = [
+  '1.jpg',
+  '2.jpg',
+  '3.jpg',
+  '4.jpg',
+  '5.jpg',
+  '6.jpg',
+  '7.jpg',
+  '8.jpg',
+  '9.jpg',
+  '10.jpg',
+  '11.jpg',
+  '12.jpg',
+  '13.jpg',
+  '14.jpg',
+  '15.jpg',
+  '16.jpg',
+]
+
+var index = 0
+
+function getSampleImage() {
+  var name = fileList[index];
+  index = (index + 1) % fileList.length
+  return name
+}
+
+async function downloadObject(channel, bucketName, objectName, getOpts = {}) {
+  // minioClient.fGetObject('mybucket', 'photo.jpg', '/tmp/photo.jpg', function(err) {
+    return new Promise((resolve, reject) => {
+
+      console.log(objectName)
+
+      var name = getSampleImage()
+
+      filePath = `${app.getPath("downloads")}/${name}`
+      if (fs.existsSync(filePath) == true)
+      {
+        resolve(filePath)
+        return
+      }
+
+      minioClient.fGetObject(bucketName, name, filePath, getOpts, function(err) {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+
+        console.log('success')
+        resolve(filePath)
+    })    
+  })
+}
 
 async function handleQuery(channel, param) {
   console.log(param)
@@ -80,6 +144,8 @@ app.whenReady().then(() => {
 
   ipcMain.handle('query', handleQuery)
   ipcMain.handle('querySubItems', handleQuerySubItems)
+
+  ipcMain.handle('downloadObject', downloadObject)
 
   createWindow()
 

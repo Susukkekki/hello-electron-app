@@ -59,7 +59,19 @@ document.getElementById('query').addEventListener("click", async ()=>{
 
         $("#sub_table td").on("click", async (e) => {
             // alert(e.target.parentElement.id)
-            $('#image').attr("src", `../image/${e.target.parentElement.id}.jpg`)
+            // $('#image').attr("src", `../image/${e.target.parentElement.id}.jpg`)
+            bucketName = "sskk"
+            objectName = "05b25e8e-7a1d-4100-8314-70756e6bb1dd.png"
+            // filePath = `d:/${objectName}`
+
+            $('#spinner').css('display', 'block')
+            $('#image').css('display', 'none')
+
+            const returnedFilePath = await window.s3.downloadObject(bucketName, objectName)
+
+            $('#spinner').css('display', 'none')
+            $('#image').css('display', 'block')
+            $('#image').attr("src", returnedFilePath)
         })
     })
 })
