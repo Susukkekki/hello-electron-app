@@ -7,3 +7,8 @@ const { contextBridge, ipcRenderer } = require('electron')
 //   ping: () => ipcRenderer.invoke('ping')
 //   // we can also expose variables, not just functions
 // })
+
+contextBridge.exposeInMainWorld('db', {
+    query: (param) => ipcRenderer.invoke('query', param),    
+    querySubItems : (param) => ipcRenderer.invoke('querySubItems', param)    
+  })
